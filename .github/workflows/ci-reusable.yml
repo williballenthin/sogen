@@ -271,6 +271,7 @@ jobs:
         platform:
           - Windows x86
           - Windows x86_64
+          - Windows ARM64
           - MinGW x86_64
           #- Linux x86_64 GCC
           - Linux x86_64 GCC Sanitizer
@@ -298,6 +299,9 @@ jobs:
           - platform: Windows x86_64
             runner: windows-latest
             devcmd_arch: x64
+          - platform: Windows ARM64
+            runner: windows-11-arm
+            devcmd_arch: arm64
           - platform: MinGW x86_64
             runner: ubuntu-24.04
             rust-target: x86_64-pc-windows-gnu
