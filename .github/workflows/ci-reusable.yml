@@ -395,6 +395,14 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y --no-install-recommends ninja-build
 
+      # windows-11-arm ships an x64 Ninja that hits a GetOverlappedResult bug under emulation.
+      - name: Install native ARM64 Ninja
+        if: "${{ matrix.platform == 'Windows ARM64' }}"
+        shell: pwsh
+        run: |
+          Invoke-WebRequest -Uri 'https://github.com/ninja-build/ninja/releases/download/v1.12.1/ninja-winarm64.zip' -OutFile ninja.zip
+          Expand-Archive -Path ninja.zip -DestinationPath 'C:\Tools\Ninja' -Force
+
       - name: Set up MinGW
         uses: egor-tensin/setup-mingw@v3
         if: "${{ startsWith(matrix.platform, 'MinGW') }}"
