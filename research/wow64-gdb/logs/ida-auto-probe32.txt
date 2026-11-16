@@ -1,0 +1,61 @@
+database bitness: 32 entry 0x401420
+add_bpt 0x401420: True
+get_processes: 1 [(0, '<attach to the process started on target>')]
+attach_process rc: 1
+event 0 PROCESS_ATTACHED       get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 1 THREAD_STARTED         get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 2 LIB_LOADED c:\probe32.exe get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 3 LIB_LOADED c:\windows\syswow64\ntdll.dll get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 4 LIB_LOADED c:\windows\system32\ntdll.dll get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 5 LIB_LOADED c:\windows\system32\win32u.dll get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 6 LIB_UNLOADED           get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 7 PROCESS_STARTED        get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 8 PROCESS_SUSPENDED      ip=0xe8b90 cs=0x33 seg=MEMORY bitness=1 insn='db    0'
+event 9 LIB_LOADED c:\windows\system32\wow64.dll get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 10 LIB_LOADED c:\windows\system32\wow64base.dll get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 11 LIB_LOADED c:\windows\system32\wow64win.dll get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 12 LIB_LOADED c:\windows\system32\wow64con.dll get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 13 LIB_LOADED c:\windows\system32\kernel32.dll get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 14 LIB_UNLOADED          get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 15 LIB_LOADED c:\windows\syswow64\kernel32.dll get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 16 LIB_UNLOADED          get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 17 LIB_LOADED c:\windows\system32\user32.dll get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 18 LIB_UNLOADED          get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 19 LIB_LOADED c:\windows\system32\wow64cpu.dll get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 20 LIB_LOADED c:\windows\syswow64\kernel32.dll get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 21 LIB_LOADED c:\windows\syswow64\kernelbase.dll get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 22 LIB_LOADED c:\windows\syswow64\ucrtbase.dll get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 23 BREAKPOINT            ip=0x401420 cs=0x23 seg=.text bitness=1 insn='push    ebp'
+modules:
+   0x400000 0x48000 c:\probe32.exe
+   0x2a00000 0xa000 c:\windows\system32\wow64cpu.dll
+   0x70000000 0x1c0000 c:\windows\syswow64\ntdll.dll
+   0x701c0000 0xf0000 c:\windows\syswow64\kernel32.dll
+   0x702b0000 0x2c5000 c:\windows\syswow64\kernelbase.dll
+   0x70580000 0x110000 c:\windows\syswow64\ucrtbase.dll
+   0x7ff000000000 0x264000 c:\windows\system32\ntdll.dll
+   0x7ff000270000 0x27000 c:\windows\system32\win32u.dll
+   0x7ff0002a0000 0x55000 c:\windows\system32\wow64.dll
+   0x7ff000300000 0xb000 c:\windows\system32\wow64base.dll
+   0x7ff000310000 0x89000 c:\windows\system32\wow64win.dll
+   0x7ff0003a0000 0x18000 c:\windows\system32\wow64con.dll
+segments:
+   0x0-0x400000 MEMORY bitness=1
+   0x400000-0x401000 probe32.exe bitness=1
+   0x401000-0x436000 .text bitness=1
+   0x436000-0x43e748 .rdata bitness=1
+   0x43e748-0x43e80c .idata bitness=1
+   0x43e80c-0x43f000 .rdata bitness=1
+   0x43f000-0x440000 .buildid bitness=1
+   0x440000-0x442000 .data bitness=1
+   0x442000-0x443000 .tls bitness=1
+   0x443000-0x448000 probe32.exe bitness=1
+   0x448000-0x2a00000 MEMORY bitness=1
+   0x70000000-0x701c0000 ntdll.dll bitness=1
+   0x701c0000-0xfffffffe MEMORY bitness=1
+step 0 STEP                    ip=0x401421 cs=0x23 seg=.text bitness=1 insn='mov     ebp, esp'
+step 1 STEP                    ip=0x401423 cs=0x23 seg=.text bitness=1 insn='mov     eax, ds:.refptr.___mingw_app_type'
+step 2 STEP                    ip=0x401428 cs=0x23 seg=.text bitness=1 insn='mov     dword ptr [eax], 0'
+step 3 STEP                    ip=0x40142e cs=0x23 seg=.text bitness=1 insn='pop     ebp'
+step 4 STEP                    ip=0x40142f cs=0x23 seg=.text bitness=1 insn='jmp     __tmainCRTStartup'
+step 5 STEP                    ip=0x401090 cs=0x23 seg=.text bitness=1 insn='push    ebp'

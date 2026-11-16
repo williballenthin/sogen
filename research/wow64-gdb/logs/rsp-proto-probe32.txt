@@ -1,0 +1,17 @@
+qSupported: PacketSize=20000;qXfer:features:read+;qXfer:libraries:read+;qXfer:exec-file:read+;qXfer:threads:read+;binary-upload+
+target.xml architecture: ['i386'] osabi: ['Windows']
+?: T05library:;thread:8;
+libraries at first stop:
+   0x400000 c:\probe32.exe
+   0x70000000 c:\windows\syswow64\ntdll.dll
+initial stop                 pc=0x7007b8e0 cs=0x23 sp=0x284fff0  in ntdll.dll+0x7b8e0
+qC: QC8 TIB: 2b2000
+Z0 entry: OK
+stop 0 T05library:;thread:8  pc=0x7007b8e0 cs=0x23 sp=0x284fff0  in ntdll.dll+0x7b8e0
+stop 1 T05library:;thread:8  pc=0x7007b8e0 cs=0x23 sp=0x284fff0  in ntdll.dll+0x7b8e0
+stop 2 T05library:;thread:8  pc=0x700794ac cs=0x23 sp=0x284f40c  in ntdll.dll+0x794ac
+stop 3 T05library:;thread:8  pc=0x700794ac cs=0x23 sp=0x284ee44  in ntdll.dll+0x794ac
+stop 4 T05library:;thread:8  pc=0x700794ac cs=0x23 sp=0x284f434  in ntdll.dll+0x794ac
+stop 5 T05thread:8;          pc=0x401420 cs=0x23 sp=0x284ff78  in probe32.exe+0x1420
+debug output: []
+debug output: []

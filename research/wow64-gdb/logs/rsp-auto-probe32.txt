@@ -1,0 +1,45 @@
+qSupported: PacketSize=20000;qXfer:features:read+;qXfer:libraries:read+;qXfer:exec-file:read+;qXfer:threads:read+;binary-upload+
+target.xml architecture: ['i386'] osabi: ['Windows']
+?: T05library:;thread:8;
+libraries at first stop:
+   0x400000 c:\probe32.exe
+   0x70000000 c:\windows\syswow64\ntdll.dll
+   0x7ff000000000 c:\windows\system32\ntdll.dll
+   0x7ff000270000 c:\windows\system32\win32u.dll
+initial stop                 pc=0xe8b90 cs=0x33 sp=0x3ee2b8  in ?
+qC: QC8 TIB: 2b0000
+Z0 entry: OK
+stop 0 T05library:;thread:8  pc=0x164674 cs=0x33 sp=0x3ed358  in ?
+stop 1 T05library:;thread:8  pc=0x164674 cs=0x33 sp=0x3ec7d8  in ?
+stop 2 T05library:;thread:8  pc=0x164674 cs=0x33 sp=0x3ec7d8  in ?
+stop 3 T05library:;thread:8  pc=0x164674 cs=0x33 sp=0x3ec7d8  in ?
+stop 4 T05library:;thread:8  pc=0x1627c4 cs=0x33 sp=0x3eda08  in ?
+stop 5 T05library:;thread:8  pc=0x162804 cs=0x33 sp=0x3eda08  in ?
+stop 6 T05library:;thread:8  pc=0x1627c4 cs=0x33 sp=0x3eda08  in ?
+stop 7 T05library:;thread:8  pc=0x162804 cs=0x33 sp=0x3eda08  in ?
+stop 8 T05library:;thread:8  pc=0x1627c4 cs=0x33 sp=0x3eda08  in ?
+stop 9 T05library:;thread:8  pc=0x162804 cs=0x33 sp=0x3eda08  in ?
+stop 10 T05library:;thread:8 pc=0x1627c4 cs=0x33 sp=0x3ed028  in ?
+stop 11 T05library:;thread:8 pc=0x1627c4 cs=0x33 sp=0x3ecfa8  in ?
+stop 12 T05library:;thread:8 pc=0x1627c4 cs=0x33 sp=0x3ecfa8  in ?
+stop 13 T05library:;thread:8 pc=0x1627c4 cs=0x33 sp=0x3ecfa8  in ?
+stop 14 T05thread:8;         pc=0x401420 cs=0x23 sp=0x284ff78  in probe32.exe+0x1420
+debug output: []
+step 0                       pc=0x401421 cs=0x23 sp=0x284ff74  in probe32.exe+0x1421
+step 1                       pc=0x401423 cs=0x23 sp=0x284ff74  in probe32.exe+0x1423
+step 2                       pc=0x401428 cs=0x23 sp=0x284ff74  in probe32.exe+0x1428
+step 3                       pc=0x40142e cs=0x23 sp=0x284ff74  in probe32.exe+0x142e
+step 4                       pc=0x40142f cs=0x23 sp=0x284ff78  in probe32.exe+0x142f
+step 5                       pc=0x401090 cs=0x23 sp=0x284ff78  in probe32.exe+0x1090
+step 6                       pc=0x401091 cs=0x23 sp=0x284ff74  in probe32.exe+0x1091
+step 7                       pc=0x401093 cs=0x23 sp=0x284ff74  in probe32.exe+0x1093
+step 8                       pc=0x401094 cs=0x23 sp=0x284ff70  in probe32.exe+0x1094
+step 9                       pc=0x401095 cs=0x23 sp=0x284ff6c  in probe32.exe+0x1095
+step 10                      pc=0x401096 cs=0x23 sp=0x284ff68  in probe32.exe+0x1096
+step 11                      pc=0x401099 cs=0x23 sp=0x284ff68  in probe32.exe+0x1099
+step 12                      pc=0x40109c cs=0x23 sp=0x284ff4c  in probe32.exe+0x109c
+step 13                      pc=0x4010a2 cs=0x23 sp=0x284ff4c  in probe32.exe+0x10a2
+cont 0 T05library:;thread:8  pc=0x1627c4 cs=0x33 sp=0x3ecfa8  in ?
+cont 1 T05library:;thread:8  pc=0x1627c4 cs=0x33 sp=0x3ecfa8  in ?
+cont 2 T05library:;thread:8  pc=0x1627c4 cs=0x33 sp=0x3ecfa8  in ?
+debug output: ['probe32 start', 'probe32 end']

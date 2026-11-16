@@ -1,0 +1,61 @@
+database bitness: 32 entry 0x401420
+add_bpt 0x401420: True
+add_bpt 0x70079560: True
+get_processes: 1 [(0, '<attach to the process started on target>')]
+attach_process rc: 1
+event 0 PROCESS_ATTACHED       get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 1 THREAD_STARTED         get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 2 LIB_LOADED c:\probe32.exe get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 3 LIB_LOADED c:\windows\syswow64\ntdll.dll get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 4 LIB_UNLOADED           get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 5 PROCESS_STARTED        get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 6 PROCESS_SUSPENDED      ip=0x7007b8e0 cs=0x23 seg=ntdll.dll bitness=1 insn='mov     [esp+4], eax'
+event 7 LIB_LOADED c:\windows\syswow64\kernel32.dll get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 8 LIB_UNLOADED           get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 9 LIB_LOADED c:\windows\syswow64\kernel32.dll get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 10 LIB_LOADED c:\windows\syswow64\kernelbase.dll get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 11 LIB_LOADED c:\windows\syswow64\ucrtbase.dll get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 12 BREAKPOINT            ip=0x401420 cs=0x23 seg=.text bitness=1 insn='push    ebp'
+event 13 STEP                  get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 14 LIB_LOADED c:\windows\syswow64\version.dll get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 15 LIB_LOADED c:\windows\syswow64\msvcrt.dll get_ip_val() is None; eip='error: Failed to retrieve register value'
+event 16 BREAKPOINT            ip=0x70079560 cs=0x23 seg=ntdll.dll bitness=1 insn='mov     eax, offset unk_60034'
+modules:
+   0x400000 0x48000 c:\probe32.exe
+   0x70000000 0x1c0000 c:\windows\syswow64\ntdll.dll
+   0x701c0000 0xf0000 c:\windows\syswow64\kernel32.dll
+   0x702b0000 0x2c5000 c:\windows\syswow64\kernelbase.dll
+   0x70580000 0x110000 c:\windows\syswow64\ucrtbase.dll
+   0x70690000 0x8000 c:\windows\syswow64\version.dll
+   0x706a0000 0xc7000 c:\windows\syswow64\msvcrt.dll
+segments:
+   0x0-0x400000 MEMORY bitness=1
+   0x400000-0x401000 probe32.exe bitness=1
+   0x401000-0x436000 .text bitness=1
+   0x436000-0x43e748 .rdata bitness=1
+   0x43e748-0x43e80c .idata bitness=1
+   0x43e80c-0x43f000 .rdata bitness=1
+   0x43f000-0x440000 .buildid bitness=1
+   0x440000-0x442000 .data bitness=1
+   0x442000-0x443000 .tls bitness=1
+   0x443000-0x448000 probe32.exe bitness=1
+   0x448000-0x70000000 MEMORY bitness=1
+   0x70000000-0x701c0000 ntdll.dll bitness=1
+   0x701c0000-0x702b0000 kernel32.dll bitness=1
+   0x702b0000-0x70575000 kernelbase.dll bitness=1
+   0x70575000-0x70580000 MEMORY bitness=1
+   0x70580000-0x70690000 ucrtbase.dll bitness=1
+   0x70690000-0x70698000 version.dll bitness=1
+   0x70698000-0x706a0000 MEMORY bitness=1
+   0x706a0000-0x70767000 msvcrt.dll bitness=1
+   0x70767000-0xfffffffe MEMORY bitness=1
+step 0 STEP                    ip=0x70079565 cs=0x23 seg=ntdll.dll bitness=1 insn='mov     edx, offset unk_700B54E0'
+step 1 STEP                    ip=0x7007956a cs=0x23 seg=ntdll.dll bitness=1 insn='call    edx ; unk_700B54E0'
+step 2 STEP                    ip=0x700b54e0 cs=0x23 seg=ntdll.dll bitness=1 insn='jmp     off_7013B22C'
+step 3 STEP                    ip=0x2a07000 cs=0x23 seg=MEMORY bitness=1 insn='jmp     far ptr unk_2A07339'
+step 4 STEP                    ip=0x7007956c cs=0x23 seg=ntdll.dll bitness=1 insn='retn    8'
+step 5 STEP                    ip=0x70092809 cs=0x23 seg=ntdll.dll bitness=1 insn='mov     edi, eax'
+step 6 STEP                    ip=0x7009280b cs=0x23 seg=ntdll.dll bitness=1 insn='cmp     edi, offset unk_40000024'
+step 7 STEP                    ip=0x70092811 cs=0x23 seg=ntdll.dll bitness=1 insn='jz      short near ptr unk_7009281A'
+step 8 STEP                    ip=0x70092813 cs=0x23 seg=ntdll.dll bitness=1 insn='and     dword ptr [esi+1008h], 0'
+step 9 STEP                    ip=0x7009281a cs=0x23 seg=ntdll.dll bitness=1 insn='mov     eax, edi'
