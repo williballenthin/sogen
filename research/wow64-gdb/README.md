@@ -46,11 +46,34 @@ E. Changes in the client (IDA or the add-on), for example to ignore stops with c
 
 A write of esi at a stop in 64-bit code (`P6`) reads back correctly and is still there at the next stop. That stop was also a library stop, so the check does not show that the value got to 32-bit execution.
 
+## UPX test with 32-bit samples
+
+`upx32-samples.txt` lists 10 UPX-packed 32-bit EXEs from VirusTotal (`type:peexe packer:upx NOT tag:64bits`). Three of them use a modified UPX that `upx -d` refuses. `upx -d` (UPX 5.3.0) gives the reference OEP and sections for the other seven.
+
+`unpack_gdb.py` unpacks one sample through raw RSP. It finds the `popad ... jmp` tail of the UPX stub, sets `Z0` on the jmp, continues, steps once and reads the image with `m` packets. `run_all.sh` runs it on all samples.
+
+With this branch (`logs/upx32-rsp-proto.jsonl`), 7 of 10 samples get to the OEP in 3 to 8 s. The 5 samples that have a `upx -d` reference stop at the same OEP, and their code sections are equal to the `upx -d` output. The differences are in the resolved IAT, `.rsrc` and `.reloc`. All stops have cs=0x23, and 200 steps after the OEP stay in 32-bit code. The other 3 samples stop with hard error 0xC0000135, because the root has no ICMP.DLL, MSVBVM60.DLL or LZ32.DLL.
+
+The add-on pin 8b4a8931 (`logs/upx32-rsp-pin.jsonl`) also gets to 6 OEPs with a breakpoint on a known address. Its initial stop is in 64-bit code, and it gives 9 to 10 more stops per sample at a 64-bit address cut to 32 bits.
+
+The IDA unpacker test (`ida_batch.sh`, `logs/upx32-ida.jsonl`) runs `unpack_one.py -b sogen` of the Malware Analysis add-on with the heuristics `jumps-other-section` and `run-to-exit-point`. `jumps-other-section` sets one range breakpoint (`Z1,401000,15000`) on the sections that do not contain the entry point. Before commit 7491e3b1, the stub sent `T05` without a stop reason. IDA then reported the stop at the OEP as an unexpected SIGTRAP and not as a breakpoint, and the heuristic found no OEP. 7491e3b1 adds `swbreak`, `hwbreak`, `watch`, `rwatch` and `awatch` to the stop reply. This part is not specific to WOW64.
+
+| heuristic | this branch | pin 8b4a8931 |
+|---|---|---|
+| `jumps-other-section` | 7 of 7 runnable samples stop at a jump to another section. 6 OEPs are equal to the target of the UPX tail jump. ffbb5c56 stops at 0x4287d1 in UPX0, and its UPX tail jumps to 0x42b818 in UPX1. | 0 of 10. Each OEP stop is an EXCEPTION. |
+| `run-to-exit-point` | 3 OEPs from the heuristic, all correct | 3 OEPs from the heuristic, all wrong (0x41c38b, 0x4349fc, 0x8b10eb) |
+
+The `run-to-exit-point` failures do not come from the stub. The two builds have the same failures:
+
+- 1ef6c1a4 runs to ExitProcess.
+- 8b0d66f1 stops when the emulator does not support NtQueryInformationProcess class 0x3D.
+- ffbb5c56 ends at a LIB_LOADED event, after one-click-debugging fails to read a 0-byte export array of profapi.dll.
+
 Open items:
 
 - The step loop stops after 1,000,000 instructions and does not use the scheduler. A step over a syscall that waits for a different thread is not tested.
 - Processes with more than one thread are not tested. x87 and XMM registers always come from the live CPU.
-- The stub reports no guest exceptions for any process. It always sends `T05`.
+- The stub reports no guest exceptions for any process. It always sends signal 5.
 - Read and write watchpoints also trigger on accesses from 64-bit wow64 code. Such stops show the saved 32-bit context.
 - `capture_wow64_thread_context` and `apply_wow64_thread_context` are not in 8b4a8931.
 
