@@ -116,6 +116,11 @@ namespace sogen::gdb_stub
             return {};
         }
 
+        virtual std::string consume_stop_reason()
+        {
+            return {};
+        }
+
         virtual std::string get_os_abi()
         {
             return {};

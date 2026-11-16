@@ -400,7 +400,9 @@ namespace sogen::gdb_stub
                              ";qXfer:libraries:read+"
                              ";qXfer:exec-file:read+"
                              ";qXfer:threads:read+"
-                             ";binary-upload+");
+                             ";binary-upload+"
+                             ";swbreak+"
+                             ";hwbreak+");
 
                 c.connection.send_reply(reply);
             }
@@ -640,7 +642,7 @@ namespace sogen::gdb_stub
             const auto id = c.handler.get_current_thread_id();
             const auto hex_id = utils::string::to_hex_number(id);
 
-            std::string reply = "T05";
+            std::string reply = "T05" + c.handler.consume_stop_reason();
 
             if (c.handler.should_signal_library())
             {

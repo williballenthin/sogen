@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <span>
 #include <string>
+#include <utility>
 
 #include <gdb_stub.hpp>
 #include <scoped_hook.hpp>
@@ -9,6 +10,7 @@
 #include <x87_tag_word.hpp>
 
 #include <utils/concurrency.hpp>
+#include <utils/string.hpp>
 
 #include "x86_register_mapping.hpp"
 #include "x86_target_descriptions.hpp"
@@ -245,6 +247,11 @@ namespace sogen
             this->cpu().stop();
         }
 
+        std::string consume_stop_reason() override
+        {
+            return std::exchange(this->stop_reason_, {});
+        }
+
         std::string get_target_description(const std::string_view file) override
         {
             const auto target_descriptions = this->get_target_descriptions();
@@ -326,26 +333,35 @@ namespace sogen
 
         using hook_map = std::unordered_map<breakpoint_key, scoped_hook>;
         utils::concurrency::container<hook_map> hooks_{};
+        std::string stop_reason_{};
 
-        emulator_hook* create_execute_hook(const uint64_t addr, const size_t size)
+        void stop_with_reason(std::string reason)
         {
-            return this->emu_->hook_memory_range_execution(addr, size, [this](cpu_interface&, const uint64_t) {
-                this->on_interrupt(); //
+            this->stop_reason_ = std::move(reason);
+            this->on_interrupt();
+        }
+
+        emulator_hook* create_execute_hook(const uint64_t addr, const size_t size, std::string_view reason)
+        {
+            return this->emu_->hook_memory_range_execution(addr, size, [this, reason](cpu_interface&, const uint64_t) {
+                this->stop_with_reason(std::string{reason}); //
             });
         }
 
-        emulator_hook* create_read_hook(const uint64_t addr, const size_t size)
+        emulator_hook* create_read_hook(const uint64_t addr, const size_t size, std::string_view reason)
         {
-            return this->emu_->hook_memory_read(addr, size, [this](cpu_interface&, const uint64_t, const void*, const size_t) {
-                this->on_interrupt(); //
-            });
+            return this->emu_->hook_memory_read(
+                addr, size, [this, reason](cpu_interface&, const uint64_t address, const void*, const size_t) {
+                    this->stop_with_reason(std::string{reason} + ":" + utils::string::to_hex_number(address) + ";");
+                });
         }
 
-        emulator_hook* create_write_hook(const uint64_t addr, const size_t size)
+        emulator_hook* create_write_hook(const uint64_t addr, const size_t size, std::string_view reason)
         {
-            return this->emu_->hook_memory_write(addr, size, [this](cpu_interface&, const uint64_t, const void*, const size_t) {
-                this->on_interrupt(); //
-            });
+            return this->emu_->hook_memory_write(
+                addr, size, [this, reason](cpu_interface&, const uint64_t address, const void*, const size_t) {
+                    this->stop_with_reason(std::string{reason} + ":" + utils::string::to_hex_number(address) + ";");
+                });
         }
 
         scoped_hook create_hook(const gdb_stub::breakpoint_type type, const uint64_t addr, const size_t size)
@@ -355,14 +371,15 @@ namespace sogen
             switch (type)
             {
             case software:
+                return {*this->emu_, this->create_execute_hook(addr, size, "swbreak:;")};
             case hardware_exec:
-                return {*this->emu_, this->create_execute_hook(addr, size)};
+                return {*this->emu_, this->create_execute_hook(addr, size, "hwbreak:;")};
             case hardware_read:
-                return {*this->emu_, this->create_read_hook(addr, size)};
+                return {*this->emu_, this->create_read_hook(addr, size, "rwatch")};
             case hardware_write:
-                return {*this->emu_, this->create_write_hook(addr, size)};
+                return {*this->emu_, this->create_write_hook(addr, size, "watch")};
             case hardware_read_write:
-                return {*this->emu_, {this->create_read_hook(addr, size), this->create_write_hook(addr, size)}};
+                return {*this->emu_, {this->create_read_hook(addr, size, "awatch"), this->create_write_hook(addr, size, "awatch")}};
             default:
                 throw std::runtime_error("Bad bp type");
             }
